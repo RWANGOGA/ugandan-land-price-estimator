@@ -7,22 +7,29 @@ import os
 import folium
 from streamlit_folium import st_folium
 import requests
-import urllib.request   # ✅ ADDED
+import urllib.request
 
 # ────────────────────────────────────────────────
-# Streamlit config (must be early)
+# Streamlit config
 # ────────────────────────────────────────────────
 st.set_page_config(page_title="Uganda Land Price Estimator", layout="wide")
 
 # ────────────────────────────────────────────────
-# Paths & Model URL
+# Base directory (CRITICAL FIX)
 # ────────────────────────────────────────────────
-MODEL_URL = "https://drive.google.com/uc?export=download&id=1CVZH0RVKKrenuxJuq9UMdaO47wOiJOGD"
-MODEL_PATH = "uganda_land_price_model.cbm"
-QUERIES_FILE = "user_queries.csv"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # ────────────────────────────────────────────────
-# Load model (AUTO DOWNLOAD)
+# Paths & URLs
+# ────────────────────────────────────────────────
+MODEL_URL = "https://drive.google.com/uc?export=download&id=1CVZH0RVKKrenuxJuq9UMdaO47wOiJOGD"
+
+MODEL_PATH = os.path.join(BASE_DIR, "uganda_land_price_model.cbm")
+TRAINING_CSV = os.path.join(BASE_DIR, "uganda_land_prices.csv")
+QUERIES_FILE = os.path.join(BASE_DIR, "user_queries.csv")
+
+# ────────────────────────────────────────────────
+# Load model (auto-download)
 # ────────────────────────────────────────────────
 @st.cache_resource
 def load_model():
@@ -38,24 +45,29 @@ def load_model():
 model = load_model()
 
 # ────────────────────────────────────────────────
-# Load and CLEAN training data
+# Load & clean training data (FIXED)
 # ────────────────────────────────────────────────
 @st.cache_data
 def load_training_data():
-    return pd.read_csv("uganda_land_prices.csv")
+    if not os.path.exists(TRAINING_CSV):
+        st.error(f"Training data not found at: {TRAINING_CSV}")
+        raise FileNotFoundError(TRAINING_CSV)
+
+    df = pd.read_csv(TRAINING_CSV)
+
+    df['price_ugx'] = pd.to_numeric(df['price_ugx'], errors='coerce')
+    df = df.dropna(subset=['price_ugx'])
+    df['price_ugx'] = df['price_ugx'].astype('int64')
+
+    return df
 
 df_train = load_training_data()
-
-df_train['price_ugx'] = pd.to_numeric(df_train['price_ugx'], errors='coerce')
-df_train = df_train.dropna(subset=['price_ugx'])
-df_train['price_ugx'] = df_train['price_ugx'].astype('int64')
-
 st.write(f"Loaded and cleaned: {len(df_train)} rows")
 
 location_counts = df_train['location'].value_counts().to_dict()
 
 # ────────────────────────────────────────────────
-# Prediction function
+# Prediction
 # ────────────────────────────────────────────────
 def predict_land_price(district, location, size_decimals, distance_km, electricity, water):
     input_data = pd.DataFrame([{
@@ -66,11 +78,12 @@ def predict_land_price(district, location, size_decimals, distance_km, electrici
         'electricity': 1 if electricity == "Yes" else 0,
         'water': 1 if water == "Yes" else 0
     }])
+
     log_pred = model.predict(input_data)
     return np.expm1(log_pred)[0]
 
 # ────────────────────────────────────────────────
-# Save query
+# Save user query (SAFE PATH)
 # ────────────────────────────────────────────────
 def save_query(district, location, size, distance, electricity, water, predicted_price):
     query_data = {
@@ -83,34 +96,49 @@ def save_query(district, location, size, distance, electricity, water, predicted
         'water': water,
         'predicted_price_ugx': round(predicted_price),
     }
+
     file_exists = os.path.isfile(QUERIES_FILE)
+
     pd.DataFrame([query_data]).to_csv(
-        QUERIES_FILE, mode='a', header=not file_exists, index=False
+        QUERIES_FILE,
+        mode='a',
+        header=not file_exists,
+        index=False
     )
 
 # ────────────────────────────────────────────────
-# Geocode
+# Geocoding
 # ────────────────────────────────────────────────
 @st.cache_data(ttl=3600)
 def get_coordinates(location, district):
     query = f"{location}, {district}, Uganda"
     url = f"https://nominatim.openstreetmap.org/search?format=json&q={query}"
     headers = {'User-Agent': 'UgandaLandPriceEstimator/1.0'}
+
     try:
         response = requests.get(url, headers=headers, timeout=5)
         data = response.json()
         if data:
-            return float(data[0]['lat']), float(data[0]['lon']), data[0].get('display_name', query)
+            return (
+                float(data[0]['lat']),
+                float(data[0]['lon']),
+                data[0].get('display_name', query)
+            )
     except:
         pass
+
     return None, None, None
 
 # ────────────────────────────────────────────────
-# Population
+# Population info
 # ────────────────────────────────────────────────
 @st.cache_data(ttl=3600)
 def get_population(district):
-    url = f"https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&exsentences=2&format=json&titles={district}_District"
+    url = (
+        "https://en.wikipedia.org/w/api.php?"
+        f"action=query&prop=extracts&exintro&exsentences=2&format=json"
+        f"&titles={district}_District"
+    )
     try:
         response = requests.get(url, timeout=5)
         data = response.json()
@@ -119,9 +147,10 @@ def get_population(district):
         if 'population' in extract.lower():
             start = extract.lower().find('population')
             end = extract.find('.', start)
-            return extract[start:end+1]
+            return extract[start:end + 1]
     except:
         pass
+
     return "Population data not available."
 
 # ────────────────────────────────────────────────
@@ -135,6 +164,7 @@ if 'prediction_results' not in st.session_state:
 # ────────────────────────────────────────────────
 with st.sidebar:
     st.header("Enter Land Details")
+
     district = st.text_input("District", value="Wakiso")
     location = st.text_input("Location", value="Kira - Kimwanyi")
     size_dec = st.number_input("Size (decimals)", min_value=1.0, value=25.0, step=0.5)
@@ -144,8 +174,14 @@ with st.sidebar:
 
     if st.button("Estimate Price", type="primary"):
         with st.spinner("Estimating..."):
-            price = predict_land_price(district, location, size_dec, distance_km, electricity, water)
-            save_query(district, location, size_dec, distance_km, electricity, water, price)
+            price = predict_land_price(
+                district, location, size_dec, distance_km, electricity, water
+            )
+
+            save_query(
+                district, location, size_dec, distance_km, electricity, water, price
+            )
+
             st.session_state.prediction_results = {
                 'district': district,
                 'location': location,
@@ -175,6 +211,8 @@ if st.session_state.prediction_results:
         st.markdown(f"### Estimated Value: UGX {price:,.0f}")
         st.success("Query saved!")
 
+# ────────────────────────────────────────────────
 # Footer
+# ────────────────────────────────────────────────
 st.markdown("---")
 st.caption("For informational use. Upcountry data limited – results approximate.")
