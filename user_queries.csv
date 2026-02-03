@@ -1,0 +1,42 @@
+timestamp,district,location,size_decimals,distance_km,electricity,water,predicted_price_ugx
+2026-02-03 16:38:46,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 16:45:05,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 16:45:14,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 16:45:19,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 16:45:21,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 16:45:24,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 16:45:26,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 16:45:28,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 16:45:29,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 16:45:31,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 16:45:52,Mukono,Busiro,25.0,2.0,Yes,Yes,339931794
+2026-02-03 16:46:21,Mukono,Busiro,25.0,2.0,Yes,No,272642369
+2026-02-03 16:46:27,Mukono,Busiro,25.0,2.0,Yes,No,272642369
+2026-02-03 16:47:03,Kazo,Burunga,23.5,1.8,Yes,Yes,374949939
+2026-02-03 16:47:16,Kazo,Burunga,23.5,1.8,Yes,Yes,374949939
+2026-02-03 16:52:46,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 16:53:47,Mbarara,kamukuzi,25.5,1.8,No,Yes,434144765
+2026-02-03 16:53:55,Mbarara,kamukuzi,25.5,1.8,No,Yes,434144765
+2026-02-03 16:53:58,Mbarara,kamukuzi,25.5,1.8,No,Yes,434144765
+2026-02-03 16:54:00,Mbarara,kamukuzi,25.5,1.8,No,Yes,434144765
+2026-02-03 16:54:02,Mbarara,kamukuzi,25.5,1.8,No,Yes,434144765
+2026-02-03 16:54:03,Mbarara,kamukuzi,25.5,1.8,No,Yes,434144765
+2026-02-03 16:54:05,Mbarara,kamukuzi,25.5,1.8,No,Yes,434144765
+2026-02-03 16:54:07,Mbarara,kamukuzi,25.5,1.8,No,Yes,434144765
+2026-02-03 16:54:08,Mbarara,kamukuzi,25.5,1.8,No,Yes,434144765
+2026-02-03 16:55:11,Kampala,kawempe,25.5,1.8,No,Yes,621061019
+2026-02-03 16:55:14,Kampala,kawempe,25.5,1.8,No,Yes,621061019
+2026-02-03 16:55:17,Kampala,kawempe,25.5,1.8,No,Yes,621061019
+2026-02-03 16:55:19,Kampala,kawempe,25.5,1.8,No,Yes,621061019
+2026-02-03 16:57:58,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 16:58:32,Mbarara,kamukuzi,25.0,2.0,Yes,Yes,372480492
+2026-02-03 16:59:27,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 16:59:47,Bushenyi,Ishaaka,25.0,2.0,Yes,No,360658539
+2026-02-03 17:00:01,Bushenyi,Ishaaka,25.0,2.0,Yes,No,360658539
+2026-02-03 17:00:04,Bushenyi,Ishaaka,25.0,2.0,Yes,No,360658539
+2026-02-03 17:00:07,Bushenyi,Ishaaka,25.0,2.0,Yes,No,360658539
+2026-02-03 17:04:53,Kampala,Bukoto,25.0,2.0,Yes,Yes,692709623
+2026-02-03 17:06:18,kazo,Kazo Town,25.0,2.0,Yes,Yes,372480492
+2026-02-03 17:08:27,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 17:20:23,Wakiso,Kira - Kimwanyi,25.0,2.0,Yes,Yes,518504757
+2026-02-03 17:21:05,Mbarara,Kakoba,25.0,2.0,Yes,Yes,372480492

@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head><title>Real Estate Estimator</title></head>
+<body>
+<h1>Uganda Land Price Estimator</h1>
+<form method="post">
+    District: <input type="text" name="district"><br>
+    Location: <input type="text" name="location"><br>
+    Size (decimals): <input type="number" name="size"><br>
+    Distance (km): <input type="number" name="distance"><br>
+    Electricity: <input type="checkbox" name="electricity"><br>
+    Water: <input type="checkbox" name="water"><br>
+    <input type="submit" value="Estimate">
+</form>
+{% if price %}
+<h2>Estimated Price: UGX {{ price | int }}</h2>
+{% endif %}
+</body>
+</html>
